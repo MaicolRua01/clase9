@@ -244,23 +244,6 @@ class Ventana1(QMainWindow):
         # el layout principal del fondo es horizontal
         self.fondo.setLayout(self.horizontal)
 
-    def accion_botonLimpiar(self):
-        self.nombreCompleto.setText(' ')
-        self.usuario.setText('')
-        self.password.setText('')
-        self.password2.setText('')
-        self.documento.setText('')
-        self.correo.setText('')
-        self.pregunta1.setText('')
-        self.respuesta1.setText('')
-        self.pregunta2.setText('')
-        self.respuesta2.setText('')
-        self.pregunta3.setText('')
-        self.respuesta3.setText('')
-
-
-    def accion_botonRegistrar(self):
-
         self.ventanaDialogo = QDialog(None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
 
         self.ventanaDialogo.resize(300, 150)
