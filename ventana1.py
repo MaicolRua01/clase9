@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QLabel, QHBoxLayout, QF
     QApplication, QDialog, QDialogButtonBox, QVBoxLayout
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtCore import Qt
+from cliente import Cliente
 
 class Ventana1(QMainWindow):
 
@@ -225,6 +226,8 @@ class Ventana1(QMainWindow):
                                        "color: #FFFFFF;"
                                        "padding: 10px;"
                                        "margin-top: 40px;")
+        # hacer que el boton buscar tenga su metodo
+        self.botonBuscar.clicked.connect(self.accion_botonBuscar)
 
         self.botonRecuperar = QPushButton("Recuperar")
         self.botonRecuperar.setFixedWidth(90)
@@ -283,6 +286,26 @@ class Ventana1(QMainWindow):
 
         self.datosCorrectos = True
 
+    def accion_botonLimpiar(self):
+        self.nombreCompleto.setText(' ')
+        self.usuario.setText('')
+        self.password.setText('')
+        self.password2.setText('')
+        self.documento.setText('')
+        self.correo.setText('')
+        self.pregunta1.setText('')
+        self.respuesta1.setText('')
+        self.pregunta2.setText('')
+        self.respuesta2.setText('')
+        self.pregunta3.setText('')
+        self.respuesta3.setText('')
+
+
+    def accion_botonRegistrar(self):
+
+
+
+
         # Validamos que los password sean iguales
         if(
                 self.password.text() != self.password2.text()
@@ -311,7 +334,7 @@ class Ventana1(QMainWindow):
         ):
             self.datosCorrectos = False
 
-            self.setText("Debe ingressar todos los campos")
+            self.mensaje.setText("Debe ingressar todos los campos")
 
             self.ventanaDialogo.exec_()
 
@@ -347,6 +370,95 @@ class Ventana1(QMainWindow):
                 if linea == '': # para cuando encuentre una linea vacia
                     break
             self.file.close()
+
+    # metodo boton buscar
+    def accion_botonBuscar(self):
+        self.ventanaDialogo.setWindowTitle("Buscar preguntas de validacion")
+
+        if(
+                self.documento.text() == ""
+        ):
+            self.datosCorrectos = False
+
+            self.mensaje.setText("Si va a buscar la pregunta"
+                                 "para recuperar la contraseña"
+                                 "\nDebe primero ingresar el documento.")
+            self.ventanaDialogo.exec_()
+
+
+
+        if(
+                not self.documento.text().isnumeric()
+        ):
+            self.datosCorrectos = False
+
+            self.mensaje.setText("El documento debe ser numerico."
+                                 "\nNo ingrese letras "
+                                 "ni caracteres especifico.")
+            self.ventanaDialogo.exec_()
+
+            self.documento.setText("")
+
+        if(
+                   self.datosCorrectos
+        ):
+            # agregamos el archivo en modo lectura
+            self.file = open("datos/clientes.txt", "rb")
+
+            usuarios = []
+
+            while self.file:
+                linea = self.file.readline().decode("UTF-8")
+                lista = linea.split(";")
+                if linea == "":
+                    break
+                # creamos un objecto tipo cliente llamado u
+                u = Cliente(
+                    lista[0],
+                    lista[1],
+                    lista[2],
+                    lista[3],
+                    lista[4],
+                    lista[5],
+                    lista[6],
+                    lista[7],
+                    lista[8],
+                    lista[9],
+                    lista[10],
+                )
+                # metemos el objetivo en lista de usuarios
+                usuarios.append(u)
+
+            self.file.close()
+
+            # en este punto tenemos la lista de usuarios con todos los usuarios
+
+            existeDocumento = False
+
+            for u in usuarios:
+
+                # comparamos el documento ingresado
+                # si coresponde con el documentos del usuario:
+                if u.documento == self.documento.text():
+
+                    self.pregunta1.setText(u.pregunta1)
+                    self.pregunta2.setText(u.pregunta2)
+                    self.pregunta3.setText(u.pregunta3)
+
+                    existeDocumento = True
+
+                    # paremos el for
+                    break
+            if(
+                    not existeDocumento
+            ):
+                # escribamos el texto esplicativo
+                self.mensaje.setText("No existe un usuario con este documento:\n"
+                                     + self.documento.text())
+
+                self.ventanaDialogo.exec_()
+
+
 
 
 
