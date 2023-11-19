@@ -243,17 +243,17 @@ class Ventana1(QMainWindow):
 
     def accion_botonLimpiar(self):
         self.nombreCompleto.setText(' ')
-        self.usuario.setText(' ')
-        self.password.setText(' ')
-        self.password2.setText(' ')
-        self.documento.setText(' ')
-        self.correo.setText(' ')
-        self.pregunta1.setText(' ')
-        self.respuesta1.setText(' ')
-        self.pregunta2.setText(' ')
-        self.respuesta2.setText(' ')
-        self.pregunta3.setText(' ')
-        self.respuesta3.setText(' ')
+        self.usuario.setText('')
+        self.password.setText('')
+        self.password2.setText('')
+        self.documento.setText('')
+        self.correo.setText('')
+        self.pregunta1.setText('')
+        self.respuesta1.setText('')
+        self.pregunta2.setText('')
+        self.respuesta2.setText('')
+        self.pregunta3.setText('')
+        self.respuesta3.setText('')
 
 
     def accion_botonRegistrar(self):
@@ -311,7 +311,7 @@ class Ventana1(QMainWindow):
         ):
             self.datosCorrectos = False
 
-            self.setText("Debe ingressar todos los campos")
+            self.mensaje.setText("Debe ingressar todos los campos")
 
             self.ventanaDialogo.exec_()
 
@@ -333,7 +333,7 @@ class Ventana1(QMainWindow):
                 + self.pregunta2.text() + ";"
                 + self.respuesta2.text() + ";"
                 + self.pregunta3.text() + ";"
-                + self.respuesta3.text() == "\n"
+                + self.respuesta3.text() + "\n"
                 ,encoding='UTF-8'))
             # cerramos el archivo
             self.file.close()
