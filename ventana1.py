@@ -236,6 +236,8 @@ class Ventana1(QMainWindow):
                                           "padding: 10px;"
                                           "margin-top: 40px;")
 
+        self.botonBuscar.clicked.connect(self.accion_botonBuscar)
+
         self.ladoDerecho.addRow(self.botonBuscar, self.botonRecuperar)
 
         self.horizontal.addLayout(self.ladoDerecho)
@@ -243,6 +245,8 @@ class Ventana1(QMainWindow):
         # ---------- FINAL---------
         # el layout principal del fondo es horizontal
         self.fondo.setLayout(self.horizontal)
+
+        # -------------- CONSTRUCION VENTANA EMERGENTE --------
 
         self.ventanaDialogo = QDialog(None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
 
@@ -267,8 +271,6 @@ class Ventana1(QMainWindow):
 
         self.ventanaDialogo.setLayout(self.vertical)
 
-        self.datosCorrectos = True
-
     def accion_botonLimpiar(self):
         self.nombreCompleto.setText(' ')
         self.usuario.setText('')
@@ -286,6 +288,7 @@ class Ventana1(QMainWindow):
 
     def accion_botonRegistrar(self):
 
+        self.datosCorrectos = False
 
         # Validamos que los password sean iguales
         if(
@@ -302,7 +305,6 @@ class Ventana1(QMainWindow):
                 self.nombreCompleto.text() == ''
                 or self.usuario.text() == ''
                 or self.password.text() == ''
-                or self.password2.text() == ''
                 or self.documento.text() == ''
                 or self.correo.text() == ''
                 or self.pregunta1.text() == ''
@@ -357,7 +359,7 @@ class Ventana1(QMainWindow):
 
         # variable para controlar que se a ingresado los dactos corretos
         self.datosCorrectos = True
-        
+
         self.ventanaDialogo.setWindowTitle("Buscar preguntas de validacion")
 
         if(
@@ -440,6 +442,124 @@ class Ventana1(QMainWindow):
                 # escribamos el texto esplicativo
                 self.mensaje.setText("No existe un usuario con este documento:\n"
                                      + self.documento.text())
+
+                self.ventanaDialogo.exec_()
+
+    def accion_botonRecuperar(self):
+
+        self.datosCorrectos = True
+
+        self.ventanaDialogo.setWindowTitle("Recuperar contraseña")
+
+        if (
+                self.pregunta1.text() == '' or
+                self.pregunta2.text() == '' or
+                self.pregunta3.text() == ''
+
+        ):
+            self.datosCorrectos = False
+
+            self.mensaje.setText("Para recuperar la contraseña debe"
+                                 "\nbuscar las preguntas de verificacion."
+                                 "\n\nPrimero ingresa su documento y luego"
+                                 "\npresiona el boton 'Buscar'")
+
+            self.ventanaDialogo.exec_()
+
+        if(
+                self.pregunta1.text() != '' and
+                self.respuesta1.text() == '' and
+                self.pregunta2.text() != '' and
+                self.respuesta2.text() == '' and
+                self.pregunta3.text() != '' and
+                self.respuesta3.text() == ''
+        ):
+            self.datosCorrectos = False
+
+            self.mensaje.setText("Para recuperar la contraseña debe"
+                                 "\ningresa la respuesta a cada pregunta")
+
+            self.ventanaDialogo.exec_()
+
+        # si los dactos son correctos
+        if(
+                self.datosCorrectos
+        ):
+            self.file = open("datos/clientes.txt", "rb")
+
+            usuarios = []
+
+            while self.file:
+                linea = self.file.readline().decode("UTF-8")
+
+                lista = linea.split(";")
+
+                if linea == "":
+                    break
+
+                # creamos un objecto tipo cliente llamado u
+                u = Cliente(
+                    lista[0],
+                    lista[1],
+                    lista[2],
+                    lista[3],
+                    lista[4],
+                    lista[5],
+                    lista[6],
+                    lista[7],
+                    lista[8],
+                    lista[9],
+                    lista[10],
+                )
+                # metemos el objetivo en lista de usuarios
+                usuarios.append(u)
+
+            self.file.close()
+
+            # en este punto tenemos la lista ususarios con todos los usuarios
+
+            existeDocumento = False
+
+            # definimos las variables para guardar las preguntas
+            resp1 = ""
+            resp2 = ""
+            resp3 = ""
+            passw = ""
+
+            # buscamos en la lista usuario por usuario si existe le cedula
+            for u in usuarios:
+                # comparamos el documento ingresado
+                # si corresponde con el documento es el usuario correcto
+                if u.documento == self.documento.text():
+                    # indicamos que encontramos el documento
+                    existeDocumento = True
+                    # guarda la respuesta
+                    resp1 = u.respuesta1
+                    resp2 = u.respuesta2
+                    resp3 = u.respuesta3
+                    passw = u.password
+                    # paramos el for
+                    break
+
+            # verificamos si las respuestas son correctas
+            # hacemos que las respuestas sean en letra minuscula
+
+            if(
+                    # usamos strip() para borrar espacios y saltos de linea
+                    self.respuesta1.text().lower().strip() == resp1.lower().strip()and
+                    self.respuesta2.text().lower().strip() == resp2.lower().strip() and
+                    self.respuesta3.text().lower().strip() == resp3.lower().strip()
+            ):
+                self.accion_botonLimpiar()
+
+                self.mensaje.setText("Contraseña:" +passw)
+
+                self.ventanaDialogo.exec_()
+            else:
+                # escribimos el texto explicativo
+                self.mensaje.setText("Las respuestas son incorretas para estas "
+                                     "\npreguntas de recuperacion."
+                                     "\nVuelve a intentarlo.")
 
                 self.ventanaDialogo.exec_()
 
