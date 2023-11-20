@@ -287,8 +287,6 @@ class Ventana1(QMainWindow):
     def accion_botonRegistrar(self):
 
 
-
-
         # Validamos que los password sean iguales
         if(
                 self.password.text() != self.password2.text()
@@ -356,6 +354,10 @@ class Ventana1(QMainWindow):
 
     # metodo boton buscar
     def accion_botonBuscar(self):
+
+        # variable para controlar que se a ingresado los dactos corretos
+        self.datosCorrectos = True
+        
         self.ventanaDialogo.setWindowTitle("Buscar preguntas de validacion")
 
         if(
