@@ -254,7 +254,7 @@ class Ventana1(QMainWindow):
 
         self.botonAceptar = QDialogButtonBox.Ok
         self.opciones = QDialogButtonBox(self.botonAceptar)
-        self.opciones.accepted.connect(self.ventanaDialogo.accepted)
+        self.opciones.accepted.connect(self.ventanaDialogo.accept)
 
         self.ventanaDialogo.setWindowTitle("Formulario de Registro")
         self.ventanaDialogo.setWindowModality(Qt.ApplicationModal)
@@ -288,7 +288,7 @@ class Ventana1(QMainWindow):
 
     def accion_botonRegistrar(self):
 
-        self.datosCorrectos = False
+        self.datosCorrectos = True
 
         # Validamos que los password sean iguales
         if(
@@ -331,7 +331,6 @@ class Ventana1(QMainWindow):
                 self.nombreCompleto.text() + ";"
                 + self.usuario.text() + ";"
                 + self.password.text() + ";"
-                + self.password2.text() + ";"
                 + self.documento.text() + ";"
                 + self.correo.text() + ";"
                 + self.pregunta1.text() + ";"
@@ -423,7 +422,7 @@ class Ventana1(QMainWindow):
             existeDocumento = False
 
             for u in usuarios:
-
+                print(u.documento + "---" + self.documento.text())
                 # comparamos el documento ingresado
                 # si coresponde con el documentos del usuario:
                 if u.documento == self.documento.text():
